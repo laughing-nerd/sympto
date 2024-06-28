@@ -2,32 +2,90 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
+@layer base {
 
-@media (prefers-color-scheme: dark) {
+
+
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --background: 270 100% 95%;
+    --foreground: 270 5% 0%;
+    --card: 270 50% 90%;
+    --card-foreground: 270 5% 10%;
+    --popover: 270 100% 95%;
+    --popover-foreground: 270 100% 0%;
+    --primary: 270 95.2% 75.3%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 270 30% 70%;
+    --secondary-foreground: 0 0% 0%;
+    --muted: 232 30% 85%;
+    --muted-foreground: 270 5% 35%;
+    --accent: 232 30% 80%;
+    --accent-foreground: 270 5% 10%;
+    --destructive: 0 100% 30%;
+    --destructive-foreground: 270 5% 90%;
+    --border: 270 30% 50%;
+    --input: 270 30% 18%;
+    --ring: 270 95.2% 75.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 270 13% 10%;
+    --foreground: 270 5% 90%;
+    --card: 270 13% 10%;
+    --card-foreground: 270 5% 90%;
+    --popover: 270 13% 5%;
+    --popover-foreground: 270 5% 90%;
+    --primary: 270 95.2% 75.3%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 270 13% 20%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 232 13% 25%;
+    --muted-foreground: 270 5% 60%;
+    --accent: 232 13% 25%;
+    --accent-foreground: 270 5% 90%;
+    --destructive: 0 50% 30%;
+    --destructive-foreground: 270 5% 90%;
+    --border: 270 20% 26%;
+    --input: 270 20% 26%;
+    --ring: 270 95.2% 75.3%;
+    --radius: 0.5rem;
+  }
+
+
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.Enable {
+  cursor: pointer;
+  pointer-events: visible;
+
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.Disable {
+  background-color: red;
+  pointer-events: none;
+}
+
+.map-component-wrapper {
+  max-height: 100vh;
+}
+
+.doctors-list {
+  min-height: 100vh;
+  max-height: 100%;
+  overflow-y: scroll;
+}
+
+::-webkit-scrollbar {
+  width: 20px;
 }
