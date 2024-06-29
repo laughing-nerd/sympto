@@ -21,7 +21,7 @@ const FeatureCard = () => {
   }, []);
   return (
     <>
-      <div className="cursor-pointer grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {data.map((item, index) => (
           <motion.div
             key={index}
@@ -31,12 +31,12 @@ const FeatureCard = () => {
             viewport={{ once: true }}
             custom={index}
           >
-            <Card className="w-full h-[180px] shadow-sm hover:shadow-md transition-all">
+            <Card className="w-full h-[180px] shadow-sm hover:shadow-md hover:bg-primary/10 transition-all">
               <CardHeader>
                 <div className="card-icon-wrapper bg-primary text-secondary w-10 h-10 flex items-center justify-center rounded-full">
-                  {item.title === 'Predict diseases' && <HeartPulse />}
-                  {item.title === 'Get cures' && <Ambulance />}
-                  {item.title === 'Find doctors' && <Stethoscope />}
+                  {item.title === 'Predict diseases' && <HeartPulse color="black" />}
+                  {item.title === 'Get cures' && <Ambulance color="black" />}
+                  {item.title === 'Find doctors' && <Stethoscope color="black" />}
                 </div>
                 <CardTitle className="border-b border-primary w-1/2 pb-2">
                   {item.title}

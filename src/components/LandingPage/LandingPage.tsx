@@ -29,7 +29,7 @@ function LandingPage() {
                   behavior: "smooth"
                 })
               }}
-              className="mt-5" data-aos="fade-right">Get Started</Button>
+              className="mt-5 text-2xl h-14 px-5" data-aos="fade-right">Get Started</Button>
           </div>
 
           <div className="hidden md:block w-full landingpage-right">

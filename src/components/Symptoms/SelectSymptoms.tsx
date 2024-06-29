@@ -1,99 +1,66 @@
 import * as React from "react";
-import { Check, ChevronsUpDown, XCircleIcon, XIcon } from "lucide-react";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { symptoms } from "@/data/symptoms";
-import Link from "next/link";
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 
-export function SelectSymptoms({lat, long}) {
-  const [open, setOpen] = React.useState(false);
-  const [symptomsPresent, setSymptomsPresent] = React.useState<string[]>([]);
-  const query = symptomsPresent.join(",")
+export function SelectSymptoms({ symptomsInfo, selectedSymptoms, setSelectedSymptoms }: {
+  symptomsInfo: { name: string, description: string, dangerLevel: string }[]
+  selectedSymptoms: string[]
+  setSelectedSymptoms: (symptoms: string[]) => void
+}) {
+  const dangerLevels = {
+    "low": "text-green-600",
+    "medium": "text-yellow-600",
+    "high": "text-red-600"
+  }
 
   return (
-    <div className="pt-5 w-full h-screen">
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="w-full justify-between"
-          >
-            Select a symptom
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-full p-0">
-          <Command>
-            <CommandInput placeholder="Search symptom..." />
-            <CommandEmpty>No symptom found.</CommandEmpty>
-            <CommandGroup className="max-h-52 overflow-y-auto">
-              {symptoms.map((symptom, index) => (
-                <CommandItem
-                  key={index}
-                  value={symptom}
-                  onSelect={(e) => {
-                    if (!symptomsPresent.includes(e)) {
-                      setSymptomsPresent((prev) => [e, ...prev]);
-                    }
-                  }}
-                >
-                  {symptom}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </Command>
-        </PopoverContent>
-      </Popover>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 h-full md:h-[75%] overflow-y-auto scrollbar">
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3 mt-5 h-[30vh]">
-        {symptomsPresent.map((ele: string, index: number) => (
-          <div
-            key={index}
-            className="flex items-center justify-between border h-10 px-3 py-2 rounded-md"
-          >
-            <p>{ele}</p>
-            <XCircleIcon
-              className="cursor-pointer"
-              color="#ff0000"
-              onClick={() => {
-                if (symptomsPresent.includes(ele)) {
-                  setSymptomsPresent(
-                    symptomsPresent.filter((item) => item != ele)
-                  );
-                }
-              }}
-            />
-          </div>
-        ))}
-      </div>
+      {symptomsInfo.map((symptom, index) => (
+        <Card
+          key={index}
+          className={`${selectedSymptoms.includes(symptom.name) && "bg-primary/20"} max-h-44 min-h-44 cursor-pointer hover:bg-primary/20 transition-all flex items-start justify-start`}
+          onClick={() => {
+            if (selectedSymptoms.includes(symptom.name)) {
+              setSelectedSymptoms(selectedSymptoms.filter((selectedSymptom) => selectedSymptom !== symptom.name))
+              return
+            }
+            setSelectedSymptoms([...selectedSymptoms, symptom.name])
+          }}>
 
-      <div className="flex justify-end">
-        {symptomsPresent.length >= 3
-          ?
-          <div className="flex items-start">
-            <p className="text-2xl font-bold border p-5 rounded-md">You can now start diagnosing by <Button><Link href={`/disease?query=${encodeURIComponent(query)}`}>Clicking Here</Link></Button></p>
-            <Image src="/unlocked.png" alt="unlocked" width={250} height={300} />
+
+          <div>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-3">
+
+                <div className="rounded-full w-4 h-4 border border-primary flex items-center justify-center">
+                  {selectedSymptoms.includes(symptom.name) && <div className="w-2 h-2 bg-primary rounded-full" />}
+                </div>
+
+                <div>
+                  {symptom.name}
+                </div>
+              </CardTitle>
+              <CardDescription>{symptom.description}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {/* <p>Potential Risk: */}
+              {/* @ts-ignore */}
+              <span className={`${dangerLevels[symptom.dangerLevel]} font-bold`}
+              >
+                {symptom.dangerLevel} risk
+              </span>
+            </CardContent>
           </div>
-          : < div className="flex items-start">
-            <p className="text-2xl font-bold border p-5 rounded-md">Select at least 3 symptoms</p>
-            <Image src="/locked.png" alt="locked" width={250} height={300} />
-          </div>
-        }
-      </div>
-    </div >
+        </Card>
+      ))}
+
+    </div>
+
   );
 }

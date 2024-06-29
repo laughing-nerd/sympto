@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Card,
   CardContent,
@@ -10,55 +10,54 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-import axios from "axios";
-import { Star } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { useGetDoctor } from "@/hooks/useGetDoctors";
+import Loader from "@/loader/Loader";
 
-export default function DocList(): JSX.Element {
-  const [doctorsData, setDoctorsData] = React.useState<any[]>([]); // You might want to replace `any[]` with a more specific type
+export default function DocList({ doctor, location }: {
+  doctor: string
+  location: number[]
+}) {
+  const { data, isPending } = useGetDoctor({
+    Doc: doctor,
+    Lat: location[0],
+    Log: location[1],
+  });
 
-  useEffect(() => {
-    const fetchDoctorsData = async () => {
-      try {
-        const response = await axios.get("/data.json");
-        setDoctorsData(response.data); // Assuming your data is directly an array
-        let firstDoctorAddress = response.data[0].address;
-        console.log(firstDoctorAddress);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchDoctorsData();
-  }, []); // Empty dependency array means it runs only once after component mount
+  if (isPending) return <Loader2 className="animate-spin" />
 
   return (
-    <div className="flex flex-col w-full min-h-screen gap-4 mt-5 mb-5 scrollbar scrollbar-w-0">
-      {doctorsData.map((item, index) => (
-        <Card
-          key={index} // Ensure to provide a unique key for each item in the list
-          className="w-full min-h-[180px] h-auto shadow-sm hover:shadow-md transition-all"
-        >
-          <CardHeader>
-            <CardTitle className="font-3xl font-bold text-lg">
-              {item.doctorName}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CardDescription className="text-md">
-              {item.category}
-            </CardDescription>
-            <p className="text-primary text-md">{item.address}</p>
-            <span className="flex flex-row items-centre gap-2 fill-current text-yellow-500">
-              {"★".repeat(Math.round(item.stars))}
-            </span>
-          </CardContent>
-          <CardFooter>
-            <Link target="_blank" href={item.googleUrl ? item.googleUrl : ""}>
-              <Button>View On Google Maps</Button>
-            </Link>
-          </CardFooter>
-        </Card>
-      ))}
+    <div className="space-y-3 w-full h-screen gap-4 mt-5 mb-5 scrollbar scrollbar-w-0 overflow-y-auto">
+      {
+        isPending ? <Loader /> : <>
+          {data?.map((item: any, index: number) => (
+            <Card
+              key={index}
+              className="w-full min-h-[180px] h-auto shadow-sm hover:shadow-md transition-all"
+            >
+              <CardHeader>
+                <CardTitle className="font-3xl font-bold text-lg">
+                  {item.doctorName}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-md">
+                  {item.category}
+                </CardDescription>
+                <p className="text-primary text-md">{item.address}</p>
+                <span className="flex flex-row items-centre gap-2 fill-current text-yellow-500">
+                  {"★".repeat(Math.round(item.stars))}
+                </span>
+              </CardContent>
+              <CardFooter>
+                <Link target="_blank" href={item.googleUrl ? item.googleUrl : ""}>
+                  <Button>View On Google Maps</Button>
+                </Link>
+              </CardFooter>
+            </Card>
+          ))}
+        </>
+      }
     </div>
   );
 }

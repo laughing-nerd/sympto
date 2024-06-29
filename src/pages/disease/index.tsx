@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Card,
   CardContent,
@@ -7,86 +7,76 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useGetPrediction } from "@/hooks/useGetPrediction";
 import { useRouter } from "next/router";
-import { Loader2Icon } from "lucide-react";
+import { Activity, Cross, Loader2, Pill } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Loader from "@/loader/Loader";
 
 function DiseasePage() {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = React.useState(true);
 
-  // const query =
+  const { query, push } = useRouter()
+  const { data, isPending, isSuccess } = useGetPrediction(query.d as string)
+  if (isPending) <Loader2 className="animate-spin" />
 
-  const [responseData, setResponseData] = React.useState([]);
-  const query = decodeURIComponent(router.query.query as string);
-  console.log(query);
-  const handlePostRequest = async () => {
-    try {
-      console.log("Sending request....");
-
-      const response = await fetch(
-        "https://diagnox-model-api.onrender.com/predict",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            // Additional headers if needed
-          },
-          body: JSON.stringify({
-            symptoms: query,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const data = await response.json();
-      setResponseData(data);
-      console.log(responseData); // Logging the received data
-      setIsLoading(false);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    console.log("Inside useEffect...");
-    handlePostRequest();
-  }, []);
   return (
-    <>
-      {responseData.length > 0 ? (
-        <>
-          {responseData.map((i, index) => {
+    <div className="py-10 space-y-10">
+      <div className="font-bold text-2xl text-center">
+        You might have the following disease(s)
+      </div>
 
-            return (
-              <Card className="w-full mb-4 min-h-[180px] h-auto shadow-sm hover:shadow-md transition-all">
-                <CardHeader>
-                  <CardTitle className="text-xl text-primary font-bold">
-                    {/* {i.dietsPrescribed} */}
+      {
+        isPending
+          ? <div className="w-full h-screen flex justify-center mt-5"><Loader /></div>
+          : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center gap-7">
+            {data?.map((disease: any, index: number) => (
+              <Card key={index} className="py-5 relative min-h-[55vh]">
+
+                {index === 0 && <div className="bg-primary w-fit rounded-full p-1 absolute -top-2 -right-2">
+                  <Activity size={30} color="black" />
+                </div>
+                }
+                {index === 1 && <div className="bg-primary w-fit rounded-full p-1 absolute -top-2 -right-2">
+                  <Cross size={30} color="black" />
+                </div>
+                }
+                {index === 2 && <div className="bg-primary w-fit rounded-full p-1 absolute -top-2 -right-2">
+                  <Pill size={30} color="black" />
+                </div>
+                }
+
+                <CardHeader className="space-y-3">
+                  <CardTitle className="flex items-center justify-between">
+                    {disease.result}
+
                   </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-md foont-light">
-                    Docrors Name
+                  <CardDescription className="text-justify">
+                    {disease.desc}
                   </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-10">
+
+                  <div>
+                    <p>Recommended specialist</p>
+                    <p className="text-2xl font-bold">{disease.Doctor}</p>
+                  </div>
+
+                  <div>
+                    <p>Diets prescribed</p>
+                    <p className="text-xl font-semibold">{disease.Dietsprescribed}</p>
+                  </div>
+
                 </CardContent>
-                <CardFooter className="text-lg font-regular">
-                  Diets Prescribed
+                <CardFooter className="w-full">
+                  <Button className="w-full" onClick={() => push(`/doctors?d=${disease.Doctor}`)}>Check for nearby specialists</Button>
                 </CardFooter>
-                <Button className="mx-5 mb-4" variant="outline">
-                  Check
-                </Button>
               </Card>
-            );
-          })}
-        </>
-      ) : (
-        <Loader2Icon className="animate-spin" />
-      )}
-    </>
+
+            ))}
+          </div>
+      }
+    </div>
+
   );
 }
 
