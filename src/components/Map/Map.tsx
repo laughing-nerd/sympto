@@ -20,11 +20,11 @@ const Map = ({ location }: {
   return (
     <>
       {location && location.length > 0 &&
-        <MapContainer center={location as LatLngExpression} zoom={15} scrollWheelZoom={true}
-          style={{
-            height: '80vh',
-            width: '40vw'
-          }}
+        <MapContainer
+          center={location as LatLngExpression}
+          zoom={15}
+          scrollWheelZoom={true}
+          className="map-container"
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

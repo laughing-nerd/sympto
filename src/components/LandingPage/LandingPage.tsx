@@ -17,8 +17,8 @@ function LandingPage() {
           <div className="landing-page-left h-full md:h-[70vh] pt-14">
             <div className="text-[54px] font-bold mt-10" data-aos="fade-right">
               Decoding Wellness with{" "}
-              <span className="text-[54px] font-bold text-primary">
-                Sympto
+              <span className="text-[54px] font-bold text-gradient">
+                SymptΩ
               </span>
             </div>
             <div className="text-[18px] font-weight-6800 mt-6" data-aos="fade-right">Predictive symptom analysis for personalized health recommendations. Find relevant specialists for tailored care. Your health, our priority</div>

@@ -10,6 +10,9 @@ const Map = dynamic(() => import("@/components/Map/Map"), {
 export default function Doctors() {
 
   const { query } = useRouter();
+
+  if (!query.d) return
+
   const [location, setLocation] = React.useState<number[] | null>(null);
 
   React.useEffect(() => {
@@ -29,15 +32,17 @@ export default function Doctors() {
   }, []);
 
   return (
-    <div className="w-full flex justify-between gap-5 h-screen overflow-y-hidden">
+    <>
       {location && location.length > 0 && (
-        <>
-          <Map location={location} />
+        <div className="w-full flex flex-col md:flex-row justify-between gap-5 h-screen overflow-y-hidden">
+          <div className="w-full">
+            <Map location={location} />
+          </div>
           <DocList doctor={query.d as string} location={location} />
-        </>
+        </div>
       )
       }
-    </div >
+    </>
   );
 }
 

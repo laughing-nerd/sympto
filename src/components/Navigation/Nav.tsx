@@ -40,13 +40,14 @@ export default function Nav() {
                       height={32}
                       className="rounded-full"
                     />
-                    <p className="text-xl">{user?.user?.name as string}</p>
+                    <p className="text-xl hidden md:block">{user?.user?.name as string}</p>
                   </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuContent className="bg-white text-black z-[999]">
+                  <DropdownMenuLabel className="hidden md:block">My Account</DropdownMenuLabel>
+                  <DropdownMenuLabel className="block md:hidden">{user?.user?.name}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="cursor-pointer"><Link href="/details">Profile</Link></DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer"><Link href="/medical-history">Medical History</Link></DropdownMenuItem>
                   <DropdownMenuItem className="text-red-500 cursor-pointer" onClick={() => signOut()}>Logout</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

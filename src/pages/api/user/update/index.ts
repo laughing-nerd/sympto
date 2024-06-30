@@ -9,15 +9,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // My brain is not braining
     const { email, doctor } = req.body
     const mc = await client()
-    const db = mc.db('sympto')
-    const collection = db.collection("users")
 
     const filter = { email: email }
     const update = {
       $push: { doctors: doctor }
     }
-    collection.updateOne(filter, update)
-    mc.close()
+    await mc.db('sympto').collection("users").updateOne(filter, update)
+    await mc.close()
 
     res.status(200).json({
       "message": "Successful!"
@@ -28,5 +26,3 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
-
-

@@ -10,9 +10,11 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-import { Loader2 } from "lucide-react";
 import { useGetDoctor } from "@/hooks/useGetDoctors";
 import Loader from "@/loader/Loader";
+import axios from "axios";
+import { useSession } from "next-auth/react";
+import { Rating } from "../Star/Star";
 
 export default function DocList({ doctor, location }: {
   doctor: string
@@ -23,8 +25,7 @@ export default function DocList({ doctor, location }: {
     Lat: location[0],
     Log: location[1],
   });
-
-  if (isPending) return <Loader2 className="animate-spin" />
+  const { data: user } = useSession()
 
   return (
     <div className="space-y-3 w-full h-screen gap-4 mt-5 mb-5 scrollbar scrollbar-w-0 overflow-y-auto">
@@ -33,10 +34,10 @@ export default function DocList({ doctor, location }: {
           {data?.map((item: any, index: number) => (
             <Card
               key={index}
-              className="w-full min-h-[180px] h-auto shadow-sm hover:shadow-md transition-all"
+              className="w-full min-h-[180px] h-auto shadow-sm hover:shadow-md transition-all hover:bg-primary/20"
             >
               <CardHeader>
-                <CardTitle className="font-3xl font-bold text-lg">
+                <CardTitle className="font-2xl font-bold text-lg">
                   {item.doctorName}
                 </CardTitle>
               </CardHeader>
@@ -45,13 +46,21 @@ export default function DocList({ doctor, location }: {
                   {item.category}
                 </CardDescription>
                 <p className="text-primary text-md">{item.address}</p>
-                <span className="flex flex-row items-centre gap-2 fill-current text-yellow-500">
-                  {"★".repeat(Math.round(item.stars))}
-                </span>
+                <Rating rating={item.stars} />
               </CardContent>
               <CardFooter>
                 <Link target="_blank" href={item.googleUrl ? item.googleUrl : ""}>
-                  <Button>View On Google Maps</Button>
+                  <Button onClick={async () => {
+
+                    await axios.post("http://localhost:3000/api/user/update", {
+                      email: user?.user?.email,
+                      doctor: item,
+                    })
+
+                    if (item.googleUrl && window) {
+                      window.open(item.googleUrl)
+                    }
+                  }}>Check out this doctor</Button>
                 </Link>
               </CardFooter>
             </Card>

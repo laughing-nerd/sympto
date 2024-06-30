@@ -21,8 +21,6 @@ export const authOptions: AuthOptions = {
       const userRec = await c.db("sympto").collection("users").findOne({ email: user.email })
       await c.close()
 
-      console.log(userRec)
-
       // If user does not exist then add the user
       if (!userRec) {
         axios.post("http://localhost:3000/api/user/post", {
@@ -33,7 +31,8 @@ export const authOptions: AuthOptions = {
         })
       }
       return true
-    }
+    },
+
   }
 }
 

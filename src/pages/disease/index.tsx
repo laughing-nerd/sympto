@@ -9,15 +9,23 @@ import {
 } from "@/components/ui/card";
 import { useGetPrediction } from "@/hooks/useGetPrediction";
 import { useRouter } from "next/router";
-import { Activity, Cross, Loader2, Pill } from "lucide-react";
+import { Activity, Cross, Pill } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Loader from "@/loader/Loader";
 
 function DiseasePage() {
 
   const { query, push } = useRouter()
-  const { data, isPending, isSuccess } = useGetPrediction(query.d as string)
-  if (isPending) <Loader2 className="animate-spin" />
+
+  if (!query.d) return
+
+  const { data, isPending } = useGetPrediction(query?.d as string)
+
+  const filteredData = data?.filter((disease: any, index: number, self: any) =>
+    index === self.findIndex((t: any) => (
+      t.result === disease.result
+    ))
+  );
 
   return (
     <div className="py-10 space-y-10">
@@ -29,7 +37,7 @@ function DiseasePage() {
         isPending
           ? <div className="w-full h-screen flex justify-center mt-5"><Loader /></div>
           : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center gap-7">
-            {data?.map((disease: any, index: number) => (
+            {filteredData?.map((disease: any, index: number) => (
               <Card key={index} className="py-5 relative min-h-[55vh]">
 
                 {index === 0 && <div className="bg-primary w-fit rounded-full p-1 absolute -top-2 -right-2">

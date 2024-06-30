@@ -19,7 +19,7 @@ export function SelectSymptoms({ symptomsInfo, selectedSymptoms, setSelectedSymp
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 h-full md:h-[75%] overflow-y-auto scrollbar">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 h-[70%] md:h-[75%] overflow-y-auto scrollbar">
 
       {symptomsInfo.map((symptom, index) => (
         <Card
